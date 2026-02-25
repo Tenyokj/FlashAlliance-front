@@ -1,0 +1,127 @@
+type Protocol @entity(immutable: false) {
+  id: ID!
+  alliancesCreated: BigInt!
+  depositsCount: BigInt!
+  depositsVolume: BigInt!
+  salesExecuted: BigInt!
+  faucetClaims: BigInt!
+  faucetClaimedVolume: BigInt!
+}
+
+type Alliance @entity(immutable: false) {
+  id: ID!
+  token: Bytes!
+  admin: Bytes!
+  createdAt: BigInt!
+  createdAtBlock: BigInt!
+  createdTxHash: Bytes!
+  targetPrice: BigInt!
+  deadline: BigInt!
+  participantsCount: Int!
+  fundingFailed: Boolean!
+  state: Int!
+
+  depositsCount: BigInt!
+  totalDepositedVolume: BigInt!
+
+  nftAddress: Bytes
+  nftTokenId: BigInt
+  lastSalePrice: BigInt
+  stateHint: String!
+}
+
+type ParticipantStats @entity(immutable: false) {
+  id: ID!
+  alliance: Alliance!
+  participant: Bytes!
+  deposited: BigInt!
+  refunds: BigInt!
+  votes: BigInt!
+  emergencyVotes: BigInt!
+}
+
+type DepositEvent @entity(immutable: true) {
+  id: ID!
+  alliance: Alliance!
+  user: Bytes!
+  amount: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type RefundEvent @entity(immutable: true) {
+  id: ID!
+  alliance: Alliance!
+  user: Bytes!
+  amount: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type NFTBuyEvent @entity(immutable: true) {
+  id: ID!
+  alliance: Alliance!
+  nftAddress: Bytes!
+  tokenId: BigInt!
+  price: BigInt!
+  seller: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type SaleVoteEvent @entity(immutable: true) {
+  id: ID!
+  alliance: Alliance!
+  voter: Bytes!
+  weight: BigInt!
+  buyer: Bytes!
+  price: BigInt!
+  saleDeadline: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type SaleExecutionEvent @entity(immutable: true) {
+  id: ID!
+  alliance: Alliance!
+  buyer: Bytes!
+  price: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type EmergencyVoteEvent @entity(immutable: true) {
+  id: ID!
+  alliance: Alliance!
+  voter: Bytes!
+  weight: BigInt!
+  recipient: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type EmergencyWithdrawEvent @entity(immutable: true) {
+  id: ID!
+  alliance: Alliance!
+  recipient: Bytes!
+  nftAddress: Bytes!
+  tokenId: BigInt!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+type FaucetClaimEvent @entity(immutable: true) {
+  id: ID!
+  user: Bytes!
+  amount: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  txHash: Bytes!
+}
