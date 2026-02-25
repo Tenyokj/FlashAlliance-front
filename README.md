@@ -6,7 +6,7 @@
 [![React](https://img.shields.io/badge/React-19-blue)]()
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-blue)]()
 
-![banner](asset.png)
+![banner](/asset.png)
 
 # FlashAlliance Frontend
 
