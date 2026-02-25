@@ -98,30 +98,32 @@ export async function fetchAlliancesFromSubgraph(limit = 200): Promise<SubgraphA
 
   const data = await requestGraph<{ alliances: Array<Record<string, unknown>> }>(query, { limit });
 
-  return data.alliances
-    .map((item) => {
-      const id = toAddress(String(item.id ?? ""));
-      if (!id) return null;
+  const alliances: SubgraphAlliance[] = [];
 
-      const rawState = Number(item.state ?? 0);
-      const safeState = Number.isFinite(rawState) ? rawState : 0;
+  for (const item of data.alliances) {
+    const id = toAddress(String(item.id ?? ""));
+    if (!id) continue; // сразу пропускаем null
 
-      const rawParticipants = Number(item.participantsCount ?? 0);
-      const participantsCount = Number.isFinite(rawParticipants) ? rawParticipants : 0;
+    const rawState = Number(item.state ?? 0);
+    const safeState = Number.isFinite(rawState) ? rawState : 0;
 
-      return {
-        id,
-        state: safeState,
-        stateHint: String(item.stateHint ?? "Unknown"),
-        targetPrice: toBigInt(item.targetPrice as string | null | undefined),
-        totalDepositedVolume: toBigInt(item.totalDepositedVolume as string | null | undefined),
-        deadline: toBigInt(item.deadline as string | null | undefined),
-        participantsCount,
-        nftAddress: toAddress(item.nftAddress as string | null | undefined),
-        nftTokenId: toBigInt(item.nftTokenId as string | null | undefined)
-      } satisfies SubgraphAlliance;
-    })
-    .filter((item): item is SubgraphAlliance => item !== null);
+    const rawParticipants = Number(item.participantsCount ?? 0);
+    const participantsCount = Number.isFinite(rawParticipants) ? rawParticipants : 0;
+
+    alliances.push({
+      id,
+      state: safeState,
+      stateHint: String(item.stateHint ?? "Unknown"),
+      targetPrice: toBigInt(item.targetPrice as string | null | undefined),
+      totalDepositedVolume: toBigInt(item.totalDepositedVolume as string | null | undefined),
+      deadline: toBigInt(item.deadline as string | null | undefined),
+      participantsCount,
+      nftAddress: toAddress(item.nftAddress as string | null | undefined),
+      nftTokenId: item.nftTokenId ? toBigInt(item.nftTokenId as string) : null
+    });
+  }
+
+  return alliances;
 }
 
 export async function fetchProtocolFromSubgraph(): Promise<SubgraphProtocol | null> {

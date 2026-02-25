@@ -175,7 +175,10 @@ export default function CreateAllianceForm({ onCreated }: Props) {
 
         <label>
           ERC20 Token Address
-          <input value={tokenAddress} onChange={(e) => setTokenAddress(e.target.value)} />
+          <input
+            value={tokenAddress}
+            onChange={(e) => setTokenAddress(e.target.value as `0x${string}`)}
+          />
         </label>
 
         <label>

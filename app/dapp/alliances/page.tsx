@@ -106,10 +106,10 @@ export default function AlliancesFlowPage() {
 
         return {
           address,
-          state: state as bigint,
-          targetPrice: targetPrice as bigint,
-          totalDeposited: totalDeposited as bigint,
-          deadline: deadline as bigint,
+          state: BigInt(state),
+          targetPrice: BigInt(targetPrice),
+          totalDeposited: BigInt(totalDeposited),
+          deadline: BigInt(deadline),
           participantsCount: (participants as string[]).length,
           nftAddress: parsedNftAddress,
           tokenId: parsedTokenId,
