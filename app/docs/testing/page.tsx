@@ -39,14 +39,14 @@ export default function DocsTestingPage() {
               <td>wrong wallet, over target, post-deadline deposit</td>
             </tr>
             <tr>
-              <td>NFT Buy</td>
-              <td>seller owns token and approved alliance</td>
-              <td>wrong seller, no approval, wrong token id</td>
+              <td>Acquisition</td>
+              <td>vote `voteToAcquire`, reach quorum, execute `buyNFT`</td>
+              <td>tuple mismatch, expired acquisition deadline, quorum not reached</td>
             </tr>
             <tr>
               <td>Governance</td>
               <td>proposal vote and execute sale</td>
-              <td>deadline mismatch, insufficient quorum</td>
+              <td>deadline mismatch, insufficient quorum, proposal reset conditions</td>
             </tr>
             <tr>
               <td>Emergency</td>

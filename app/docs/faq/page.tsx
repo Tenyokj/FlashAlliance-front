@@ -17,6 +17,14 @@ export default function DocsFaqPage() {
         </article>
 
         <article>
+          <h3>Why does `buyNFT` fail even with enough funds?</h3>
+          <p>
+            In the new flow, buy is execution-only. Participants must first approve one acquisition tuple via `voteToAcquire`
+            and reach quorum before `buyNFT`.
+          </p>
+        </article>
+
+        <article>
           <h3>Can I move alliance from Closed back to Funding?</h3>
           <p>No. Lifecycle is one-way by contract design.</p>
         </article>

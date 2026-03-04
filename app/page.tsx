@@ -1,6 +1,7 @@
 import Link from "next/link";
 import HeroWebGL from "./components/HeroWebGL";
-import { siteLinks } from "@/lib/siteLinks";
+import CopyIconButton from "./components/CopyIconButton";
+import SiteFooter from "./components/SiteFooter";
 
 const tickerItems = [
   "ERC20 Funding",
@@ -86,8 +87,52 @@ const drawers = [
   }
 ];
 
+const problemSteps = [
+  {
+    title: "Current Reality",
+    text: "A group wants one NFT, but funds are sent to one person. Everyone else loses direct control over money."
+  },
+  {
+    title: "What Breaks",
+    text: "That wallet owner can delay, change terms, or disappear. Trust becomes the only security model."
+  },
+  {
+    title: "FlashAlliance Path",
+    text: "People create an alliance room, deposit into contract escrow, vote key actions, and execute NFT flow by fixed rules."
+  }
+];
+
+const whyFlashItems = [
+  {
+    icon: "🛡",
+    title: "Contract Escrow",
+    text: "Funds stay in contract flow, not in one personal wallet."
+  },
+  {
+    icon: "🗳",
+    title: "Group Coordination",
+    text: "Acquisition and exit actions are voted, not delegated to one operator."
+  },
+  {
+    icon: "🔎",
+    title: "On-chain Clarity",
+    text: "Every deposit, vote, and execution can be verified onchain."
+  },
+  {
+    icon: "⚖",
+    title: "Deterministic Split",
+    text: "Sale proceeds are distributed by fixed shares, automatically."
+  }
+];
+
 const coreRepoUrl = process.env.NEXT_PUBLIC_CORE_REPO_URL ?? "https://github.com/Tenyokj/FlashAlliance";
 const frontRepoUrl = process.env.NEXT_PUBLIC_FRONT_REPO_URL ?? "#";
+const chainId = Number.parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? "11155111", 10);
+const chainLabel = chainId === 11155111 ? "Sepolia" : `Chain ${chainId}`;
+const explorerBase = chainId === 11155111 ? "https://sepolia.etherscan.io/address/" : "https://etherscan.io/address/";
+const factoryAddress = process.env.NEXT_PUBLIC_FACTORY_ADDRESS ?? "0x0000000000000000000000000000000000000000";
+const tokenAddress = process.env.NEXT_PUBLIC_TOKEN_ADDRESS ?? "0x0000000000000000000000000000000000000000";
+const faucetAddress = process.env.NEXT_PUBLIC_FAUCET_ADDRESS ?? "0x0000000000000000000000000000000000000000";
 
 export default function HomePage() {
   return (
@@ -99,12 +144,16 @@ export default function HomePage() {
 
         <nav className="menu" aria-label="Main navigation">
           <a href="#overview">Overview</a>
+          <a href="#problem">Problem</a>
           <a href="#flow">Flow</a>
           <a href="#surface">Surface</a>
           <a href="#launch">Launch</a>
         </nav>
 
         <div className="menu-actions">
+          <Link href="/faq" className="btn ghost">
+            FAQ
+          </Link>
           <Link href="/docs" className="btn ghost">
             Docs
           </Link>
@@ -132,6 +181,12 @@ export default function HomePage() {
           <div className="hero-actions">
             <Link href="/dapp/create" className="btn fire large">
               Create Alliance
+            </Link>
+            <Link href="/dapp" className="btn ghost large">
+              Open dApp
+            </Link>
+            <Link href="/docs" className="btn ghost large">
+              Open Docs
             </Link>
             <a href="#flow" className="btn ghost large">
               View Mechanics
@@ -177,6 +232,63 @@ export default function HomePage() {
             <h3>Exit</h3>
             <p>Vote and deterministic split.</p>
           </article>
+        </div>
+      </section>
+
+      <section className="problem" id="problem">
+        <div className="problem-bg" aria-hidden="true">
+          <div className="problem-orb" />
+          <div className="problem-web" />
+          <div className="problem-columns">
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+        </div>
+
+        <div className="problem-layout">
+          <div>
+            <div className="problem-head">
+              <p className="micro">Why this dApp exists</p>
+              <h2 className="problem-title">Trust is not escrow.</h2>
+              <p className="problem-lead">
+                FlashAlliance solves a simple but painful case: group NFT buying with strangers or semi-trusted contacts. Funds stay
+                in contract control, not in one personal wallet.
+              </p>
+            </div>
+
+            <div className="problem-grid">
+              {problemSteps.map((item, idx) => (
+                <div key={item.title} className="problem-point" style={{ animationDelay: `${idx * 140}ms` }}>
+                  <span className="problem-index pixel">{`0${idx + 1}`}</span>
+                  <div className="problem-point-copy">
+                    <h3>{item.title}</h3>
+                    <p>{item.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="problem-why">
+              <p className="micro pixel">Why FlashAlliance</p>
+              <div className="problem-why-grid">
+                {whyFlashItems.map((item, idx) => (
+                  <article key={item.title} className="problem-why-item" style={{ animationDelay: `${320 + idx * 90}ms` }}>
+                    <span className="problem-why-icon" aria-hidden="true">{item.icon}</span>
+                    <h4>{item.title}</h4>
+                    <p>{item.text}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <aside className="problem-proof" aria-label="FlashAlliance control panel screenshot">
+            <img src="/flash-dapp.png" alt="FlashAlliance dApp control panel in action" loading="lazy" />
+            <div className="proof-overlay" />
+            <div className="proof-badge pixel">Live contract controls</div>
+          </aside>
         </div>
       </section>
 
@@ -276,6 +388,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="live-net">
+        <div className="live-net-head">
+          <p className="micro pixel">Live on {chainLabel}</p>
+          <h2>Deployed and verifiable.</h2>
+          <p className="live-net-lead">
+            Contracts are live onchain. Use explorer links below to verify addresses and bytecode directly.
+          </p>
+        </div>
+        <div className="live-net-grid">
+          <article className="live-card">
+            <p className="live-label pixel">Factory</p>
+            <div className="address-row">
+              <p className="live-address">{factoryAddress}</p>
+              <CopyIconButton value={factoryAddress} />
+            </div>
+            <p>Creates new alliance instances.</p>
+            <a href={`${explorerBase}${factoryAddress}`} target="_blank" rel="noreferrer" className="btn ghost">
+              View on Etherscan
+            </a>
+          </article>
+          <article className="live-card">
+            <p className="live-label pixel">FATK Token</p>
+            <div className="address-row">
+              <p className="live-address">{tokenAddress}</p>
+              <CopyIconButton value={tokenAddress} />
+            </div>
+            <p>Settlement and funding token.</p>
+            <a href={`${explorerBase}${tokenAddress}`} target="_blank" rel="noreferrer" className="btn ghost">
+              View on Etherscan
+            </a>
+          </article>
+          <article className="live-card">
+            <p className="live-label pixel">Faucet</p>
+            <div className="address-row">
+              <p className="live-address">{faucetAddress}</p>
+              <CopyIconButton value={faucetAddress} />
+            </div>
+            <p>Test token distribution with cooldown.</p>
+            <a href={`${explorerBase}${faucetAddress}`} target="_blank" rel="noreferrer" className="btn ghost">
+              View on Etherscan
+            </a>
+          </article>
+        </div>
+        <div className="trust-strip">
+          <p>
+            <strong>Trust assumptions:</strong> contract logic enforces escrow and vote flows, but OTC execution still depends on
+            offchain coordination with seller and valid NFT approvals at execution time.
+          </p>
+        </div>
+      </section>
+
       <section className="status" id="launch">
         <p>FLASHALLIANCE = INDEPENDENT PRODUCT</p>
         <p>SEPARATE STANDALONE dApp</p>
@@ -358,6 +521,12 @@ export default function HomePage() {
         <Link href="/dapp/create" className="btn fire large wide">
           Launch FlashAlliance
         </Link>
+        <Link href="/faq" className="btn ghost large wide">
+          FAQ
+        </Link>
+        <Link href="/sepolia-guide" className="btn ghost large wide">
+          Sepolia Guide
+        </Link>
         <Link href="/docs" className="btn ghost large wide">
           Integration Docs
         </Link>
@@ -366,39 +535,7 @@ export default function HomePage() {
         </Link>
       </section>
 
-      <footer className="footer">
-        <div className="footer-brand">
-          <h4>FlashAlliance</h4>
-          <p>Collective NFT module for tokenized alliance trading.</p>
-        </div>
-
-        <div className="footer-col">
-          <h5>Product</h5>
-          {siteLinks.product.map((item) => (
-            <Link key={item.label} href={item.href}>
-              {item.label}
-            </Link>
-          ))}
-        </div>
-
-        <div className="footer-col">
-          <h5>Ecosystem</h5>
-          {siteLinks.ecosystem.map((item) => (
-            <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel={item.href.startsWith("http") ? "noreferrer" : undefined}>
-              {item.label}
-            </a>
-          ))}
-        </div>
-
-        <div className="footer-col">
-          <h5>Community</h5>
-          {siteLinks.community.map((item) => (
-            <a key={item.label} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel={item.href.startsWith("http") ? "noreferrer" : undefined}>
-              {item.label}
-            </a>
-          ))}
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }

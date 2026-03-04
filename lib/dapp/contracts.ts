@@ -1,6 +1,8 @@
 import { getAddress } from "viem";
 
-export const DAPP_CHAIN_ID = 31337;
+const rawChainId = Number.parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? "31337", 10);
+export const DAPP_CHAIN_ID = Number.isFinite(rawChainId) ? rawChainId : 31337;
+export const DAPP_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME ?? (DAPP_CHAIN_ID === 11155111 ? "Sepolia" : "Hardhat");
 export const DAPP_RPC_URL = process.env.NEXT_PUBLIC_RPC_URL ?? "http://127.0.0.1:8545";
 
 export const TENYOKJ_TOKEN_ADDRESS = getAddress(
@@ -167,6 +169,48 @@ export const allianceAbi = [
   },
   {
     type: "function",
+    name: "acquisitionVotesWeight",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }]
+  },
+  {
+    type: "function",
+    name: "proposedAcquisitionPrice",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }]
+  },
+  {
+    type: "function",
+    name: "proposedAcquisitionDeadline",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }]
+  },
+  {
+    type: "function",
+    name: "proposedAcquisitionNft",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }]
+  },
+  {
+    type: "function",
+    name: "proposedAcquisitionTokenId",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }]
+  },
+  {
+    type: "function",
+    name: "proposedAcquisitionSeller",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }]
+  },
+  {
+    type: "function",
     name: "isPaused",
     stateMutability: "view",
     inputs: [],
@@ -216,6 +260,13 @@ export const allianceAbi = [
   },
   {
     type: "function",
+    name: "hasVotedAcquisition",
+    stateMutability: "view",
+    inputs: [{ name: "participant", type: "address" }],
+    outputs: [{ name: "", type: "bool" }]
+  },
+  {
+    type: "function",
     name: "deposit",
     stateMutability: "nonpayable",
     inputs: [{ name: "amount", type: "uint256" }],
@@ -230,13 +281,29 @@ export const allianceAbi = [
   },
   {
     type: "function",
-    name: "buyNFT",
+    name: "voteToAcquire",
     stateMutability: "nonpayable",
     inputs: [
       { name: "_nftAddress", type: "address" },
       { name: "_tokenId", type: "uint256" },
-      { name: "seller", type: "address" }
+      { name: "seller", type: "address" },
+      { name: "price", type: "uint256" },
+      { name: "acquisitionDeadline", type: "uint256" }
     ],
+    outputs: [{ name: "reached", type: "bool" }]
+  },
+  {
+    type: "function",
+    name: "resetAcquisitionProposal",
+    stateMutability: "nonpayable",
+    inputs: [],
+    outputs: []
+  },
+  {
+    type: "function",
+    name: "buyNFT",
+    stateMutability: "nonpayable",
+    inputs: [],
     outputs: []
   },
   {

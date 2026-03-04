@@ -8,6 +8,7 @@ import { dappPublicClient } from "@/lib/dapp/client";
 import { loadNftMedia } from "@/lib/dapp/nft";
 import { ensureContractDeployed } from "@/lib/dapp/contractHealth";
 import { fetchAlliancesFromSubgraph, SUBGRAPH_URL } from "@/lib/dapp/subgraph";
+import { toRpcErrorMessage } from "@/lib/dapp/walletErrors";
 
 type AllianceSummary = {
   address: Address;
@@ -137,10 +138,10 @@ export default function AlliancesFlowPage() {
         try {
           await loadAlliancesViaRpc();
         } catch (rpcError) {
-          setError(rpcError instanceof Error ? rpcError.message : "Failed to load alliance flow");
+          setError(toRpcErrorMessage(rpcError, "Failed to load alliance flow"));
         }
       } else {
-        setError(e instanceof Error ? e.message : "Failed to load alliance flow");
+        setError(toRpcErrorMessage(e, "Failed to load alliance flow"));
       }
     } finally {
       setLoading(false);

@@ -13,11 +13,11 @@ export default function DocsHowItWorksPage() {
       <section id="states" className="docs-steps">
         <article>
           <h3>State: Funding</h3>
-          <p>Participants deposit ERC20 until target is reached or deadline expires.</p>
+          <p>Participants deposit ERC20 and coordinate acquisition governance until target is reached or deadline expires.</p>
           <ul>
-            <li>Allowed: `deposit`, `cancelFunding`</li>
+            <li>Allowed: `deposit`, `cancelFunding`, `voteToAcquire`, `resetAcquisitionProposal`, `buyNFT`</li>
             <li>Blocked: sale voting and emergency withdrawal actions</li>
-            <li>Key checks: participant role, allowance, remaining target, funding deadline</li>
+            <li>Key checks: participant role, allowance, remaining target, acquisition tuple consistency, quorum, deadlines</li>
           </ul>
         </article>
 
@@ -36,6 +36,7 @@ export default function DocsHowItWorksPage() {
           <p>Terminal state after sale execution, emergency withdrawal, or failed funding closure.</p>
           <ul>
             <li>Allowed conditionally: `withdrawRefund` only if funding failure path was activated</li>
+            <li>`withdrawRefund` is available even when contract pause is active</li>
             <li>No transition back to Funding</li>
           </ul>
         </article>
@@ -53,6 +54,9 @@ export default function DocsHowItWorksPage() {
         <ul>
           <li>`alliance is not in Funding state`: current state is Acquired or Closed.</li>
           <li>`amount exceeds remaining target`: target already reached.</li>
+          <li>`quorum not reached`: proposal has not accumulated enough weighted votes yet.</li>
+          <li>`no acquisition proposal` or `acquisition expired`: buy/reset called outside active acquisition window.</li>
+          <li>`unsupported token`: token transfer amount changed unexpectedly (fee/rebase/non-standard behavior).</li>
           <li>`only participant`: wallet is not in participant list.</li>
           <li>`seller not owner` or transfer failures: wrong seller/NFT approval context.</li>
         </ul>

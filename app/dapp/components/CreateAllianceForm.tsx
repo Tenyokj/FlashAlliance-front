@@ -3,9 +3,10 @@
 import { useMemo, useState } from "react";
 import { createWalletClient, custom, getAddress, isAddress } from "viem";
 import { ALLIANCE_FACTORY_ADDRESS, TENYOKJ_TOKEN_ADDRESS, allianceFactoryAbi } from "@/lib/dapp/contracts";
-import { dappPublicClient } from "@/lib/dapp/client";
+import { dappChain, dappPublicClient } from "@/lib/dapp/client";
 import { useEvmWallet } from "../hooks/useEvmWallet";
 import { ensureContractDeployed } from "@/lib/dapp/contractHealth";
+import { toWalletErrorMessage } from "@/lib/dapp/walletErrors";
 
 type Props = {
   onCreated: () => Promise<void>;
@@ -111,12 +112,7 @@ export default function CreateAllianceForm({ onCreated }: Props) {
 
     const wallet = createWalletClient({
       account: activeAccount,
-      chain: {
-        id: 31337,
-        name: "Hardhat",
-        nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-        rpcUrls: { default: { http: ["http://127.0.0.1:8545"] }, public: { http: ["http://127.0.0.1:8545"] } }
-      },
+      chain: dappChain,
       transport: custom(window.ethereum)
     });
 
@@ -149,7 +145,7 @@ export default function CreateAllianceForm({ onCreated }: Props) {
       setStatus("Alliance created successfully");
       await onCreated();
     } catch (txError) {
-      setError(txError instanceof Error ? txError.message : "Transaction failed");
+      setError(toWalletErrorMessage(txError, "Transaction failed"));
     } finally {
       setIsSubmitting(false);
     }

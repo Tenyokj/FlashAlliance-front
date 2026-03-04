@@ -21,6 +21,12 @@ export default function DocsOverviewPage() {
           <li><Link href="/docs/tokenomics">FATK and Economy</Link> for settlement logic and realistic token strategy.</li>
           <li><Link href="/docs/how-it-works">How It Works</Link> for lifecycle states and contract action gates.</li>
           <li><Link href="/docs/testing">Testing Guide</Link> for local bootstrap and repeatable QA workflow.</li>
+          <li><Link href="/docs/deployments">Deployments</Link> for live addresses, chain metadata, and explorer links.</li>
+          <li><Link href="/docs/assumptions">Assumptions</Link> for contract guarantees vs offchain boundaries.</li>
+          <li><Link href="/docs/runbook">Runbook</Link> for revert decoding and operational responses.</li>
+          <li><Link href="/docs/changelog">Changelog</Link> for protocol updates and frontend migration notes.</li>
+          <li><Link href="/docs/release">Release Readiness</Link> for go-live gates and QA publication checklist.</li>
+          <li><Link href="/docs/repository">Repository Scope</Link> for open-source include/exclude list.</li>
           <li><Link href="/docs/rules">Rules of Use</Link> for reporting format and reward policy.</li>
           <li><Link href="/docs/faq">FAQ</Link> for common confusion points.</li>
           <li><Link href="/docs/risk">Risk Disclosure</Link> for user-facing constraints and warnings.</li>

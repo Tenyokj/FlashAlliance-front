@@ -20,3 +20,6 @@ graph/build
 
 # Local deploy/runtime artifacts
 .vercel
+
+# Keep frontend repo scope clean (core contracts live in separate repo/workspace)
+FlashAlliance/

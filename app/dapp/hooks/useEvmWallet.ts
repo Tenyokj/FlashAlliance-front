@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { type Address, type EIP1193Provider } from "viem";
+import { DAPP_CHAIN_ID, DAPP_CHAIN_NAME, DAPP_RPC_URL } from "@/lib/dapp/contracts";
+import { toWalletErrorMessage } from "@/lib/dapp/walletErrors";
 
 declare global {
   interface Window {
@@ -12,8 +14,8 @@ declare global {
   }
 }
 
-const HARDHAT_CHAIN_ID = 31337;
-const HARDHAT_HEX = "0x7a69";
+const TARGET_CHAIN_ID = DAPP_CHAIN_ID;
+const TARGET_CHAIN_HEX = `0x${TARGET_CHAIN_ID.toString(16)}`;
 
 function parseChainId(hex: string | null) {
   if (!hex) return null;
@@ -28,7 +30,7 @@ export function useEvmWallet() {
   const [isSwitching, setIsSwitching] = useState(false);
 
   const hasProvider = typeof window !== "undefined" && Boolean(window.ethereum);
-  const isWrongNetwork = chainId !== null && chainId !== HARDHAT_CHAIN_ID;
+  const isWrongNetwork = chainId !== null && chainId !== TARGET_CHAIN_ID;
 
   const refresh = useCallback(async () => {
     if (!window.ethereum) {
@@ -85,7 +87,7 @@ export function useEvmWallet() {
 
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: HARDHAT_HEX }]
+        params: [{ chainId: TARGET_CHAIN_HEX }]
       });
 
       await refresh();
@@ -98,22 +100,22 @@ export function useEvmWallet() {
             method: "wallet_addEthereumChain",
             params: [
               {
-                chainId: HARDHAT_HEX,
-                chainName: "Hardhat Local",
+                chainId: TARGET_CHAIN_HEX,
+                chainName: DAPP_CHAIN_NAME,
                 nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-                rpcUrls: ["http://127.0.0.1:8545"]
+                rpcUrls: [DAPP_RPC_URL]
               }
             ]
           });
           await refresh();
           return;
         } catch (addError) {
-          setError(addError instanceof Error ? addError.message : "Failed to add local chain");
+          setError(toWalletErrorMessage(addError, "Failed to add target chain"));
           return;
         }
       }
 
-      setError(switchError instanceof Error ? switchError.message : "Network switch failed");
+      setError(toWalletErrorMessage(switchError, "Network switch failed"));
     } finally {
       setIsSwitching(false);
     }
@@ -156,6 +158,7 @@ export function useEvmWallet() {
     hasProvider,
     connect,
     refresh,
-    switchToHardhat
+    switchToHardhat,
+    targetChainName: DAPP_CHAIN_NAME
   };
 }

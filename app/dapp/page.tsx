@@ -9,6 +9,7 @@ import { ALLIANCE_FACTORY_ADDRESS, allianceFactoryAbi } from "@/lib/dapp/contrac
 import { dappPublicClient } from "@/lib/dapp/client";
 import { ensureContractDeployed } from "@/lib/dapp/contractHealth";
 import { fetchProtocolFromSubgraph, SUBGRAPH_URL } from "@/lib/dapp/subgraph";
+import { toRpcErrorMessage } from "@/lib/dapp/walletErrors";
 
 function shortAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -42,7 +43,7 @@ export default function DappDashboardPage() {
 
       setAllianceCount((alliances as string[]).map((a) => getAddress(a)).length);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load dashboard");
+      setError(toRpcErrorMessage(e, "Failed to load dashboard"));
     }
   }, []);
 
@@ -108,7 +109,7 @@ export default function DappDashboardPage() {
         <article className="dapp-panel dashboard-card">
           <p className="dapp-label pixel">Control</p>
           <h3>Contract Admin</h3>
-          <p className="dapp-muted">Open any alliance and run funding, voting, sale, emergency and pause controls.</p>
+          <p className="dapp-muted">Open any alliance and run funding, acquisition voting, sale, emergency and pause controls.</p>
           <Link href="/dapp/alliances" className="dapp-link-btn" style={{ marginTop: "10px" }}>
             Select Alliance
           </Link>

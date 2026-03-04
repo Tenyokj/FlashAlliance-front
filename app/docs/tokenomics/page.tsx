@@ -27,7 +27,8 @@ export default function DocsTokenomicsPage() {
 
         <h2 id="settlement-confusion">3. Why confusion appears in NFT purchase flow</h2>
         <p>
-          `buyNFT` in your contract pays seller using the alliance ERC20 token. If alliance token is FATK, seller receives FATK.
+          `buyNFT` in your contract pays seller using the alliance ERC20 token, but execution is only allowed for a previously
+          approved acquisition tuple (NFT, tokenId, seller, price, deadline). If alliance token is FATK, seller receives FATK.
           This is contract-defined behavior, not UI convention. Therefore, the settlement token must be selected with seller
           agreement in mind.
         </p>

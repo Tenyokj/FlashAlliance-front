@@ -53,6 +53,33 @@ const routeToc: Record<string, TocItem[]> = {
     { href: "#user-obligations", label: "User Obligations" },
     { href: "#reporting", label: "Reporting Rules" },
     { href: "#reward-policy", label: "Reward Policy" }
+  ],
+  "/docs/deployments": [
+    { href: "#live-sepolia", label: "Live Sepolia" },
+    { href: "#contracts-matrix", label: "Contracts Matrix" },
+    { href: "#release-meta", label: "Release Meta" }
+  ],
+  "/docs/assumptions": [
+    { href: "#security-assumptions", label: "Security Assumptions" },
+    { href: "#known-limitations", label: "Known Limitations" }
+  ],
+  "/docs/runbook": [
+    { href: "#common-reverts", label: "Common Reverts" },
+    { href: "#ops-checklist", label: "Ops Checklist" }
+  ],
+  "/docs/changelog": [
+    { href: "#release-2026-03", label: "2026-03 Release" },
+    { href: "#frontend-migration", label: "Frontend Migration Notes" }
+  ],
+  "/docs/release": [
+    { href: "#release-readiness", label: "Release Snapshot" },
+    { href: "#qa-gates", label: "QA Gates" },
+    { href: "#quality-gates", label: "Quality Gates" },
+    { href: "#security-legal", label: "Security & Legal" }
+  ],
+  "/docs/repository": [
+    { href: "#repo-include", label: "Include List" },
+    { href: "#repo-exclude", label: "Exclude List" }
   ]
 };
 
@@ -77,6 +104,12 @@ export default function DocsSidebar() {
         <Link href="/docs/tokenomics">FATK & Economy</Link>
         <Link href="/docs/how-it-works">How It Works</Link>
         <Link href="/docs/testing">Testing</Link>
+        <Link href="/docs/deployments">Deployments</Link>
+        <Link href="/docs/assumptions">Assumptions</Link>
+        <Link href="/docs/runbook">Runbook</Link>
+        <Link href="/docs/changelog">Changelog</Link>
+        <Link href="/docs/release">Release Readiness</Link>
+        <Link href="/docs/repository">Repository Scope</Link>
         <Link href="/docs/rules">Rules of Use</Link>
         <Link href="/docs/faq">FAQ</Link>
         <Link href="/docs/risk">Risk</Link>

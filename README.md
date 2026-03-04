@@ -1,161 +1,95 @@
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)]()
-[![Build](https://img.shields.io/badge/build-passing-brightgreen)]()
-[![Ethereum Network](https://img.shields.io/badge/Network-Sepolia-purple)]()
-[![Next.js](https://img.shields.io/badge/Next.js-15-black)]()
-[![React](https://img.shields.io/badge/React-19-blue)]()
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-blue)]()
-
-![banner](/flash-asset.png)
-
 # FlashAlliance Frontend
 
-> Frontend for FlashAlliance dApp (Next.js App Router).
-> Manage alliances, track flows, and interact with your smart contracts directly via the web interface.
+Frontend for FlashAlliance standalone dApp (Next.js App Router).
 
----
+## Stack
+- Next.js 16
+- React 19
+- TypeScript
+- viem
+- Optional subgraph (`graph/`) with RPC fallback
 
-## 📦 Repository Contents
+## Core Routes
+- `/` landing
+- `/faq` marketing FAQ
+- `/sepolia-guide` onboarding for Sepolia + MetaMask + faucet
+- `/dapp` dashboard
+- `/dapp/create` alliance creation
+- `/dapp/alliances` alliance flow cards
+- `/dapp/alliance/[address]` alliance control panel
+- `/docs` technical docs
+- `/docs/deployments` source-of-truth contract addresses
+- `/docs/assumptions`, `/docs/runbook`, `/docs/changelog`, `/docs/release`
 
-* **Landing page** and project overview routes
-* **dApp routes**: alliance creation, flow view, alliance control panel
-* **FATK faucet UI**
-* **Documentation / help routes**
-* **Subgraph integration** (The Graph) with RPC fallback
-
----
-
-## ⚙️ Tech Stack
-
-* Next.js 15
-* React 19
-* TypeScript
-* viem
-* The Graph (subgraph located under `graph/`)
-
----
-
-## 🛣 Main Routes
-
-| Route                      | Description                 |
-| -------------------------- | --------------------------- |
-| `/`                        | Home / Landing Page         |
-| `/dapp`                    | dApp dashboard              |
-| `/dapp/create`             | Create an alliance          |
-| `/dapp/alliances`          | Alliances flow (mini cards) |
-| `/dapp/alliance/[address]` | Alliance control panel      |
-| `/docs`                    | User handbook               |
-
----
-
-## 🌐 Environment Variables
-
-Use `.env.local` (or `.env`) for frontend runtime values:
-
-```env
-NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8545
-NEXT_PUBLIC_SUBGRAPH_URL=
-NEXT_PUBLIC_FACTORY_ADDRESS=0x...
-NEXT_PUBLIC_TOKEN_ADDRESS=0x...
-NEXT_PUBLIC_FAUCET_ADDRESS=0x...
-
-NEXT_PUBLIC_CORE_REPO_URL=https://github.com/Tenyokj/FlashAlliance
-NEXT_PUBLIC_FRONT_REPO_URL=https://github.com/Tenyokj/FlashAlliance-front
-NEXT_PUBLIC_CONTRACTS_URL=https://github.com/Tenyokj/FlashAlliance/blob/main/docs/CONTRACTS.md
-NEXT_PUBLIC_REDDIT_URL=https://www.reddit.com/r/FlashAlliance
-NEXT_PUBLIC_CONTACT_URL=mailto:contact@flashalliance.xyz
-```
-
-> If `NEXT_PUBLIC_SUBGRAPH_URL` is empty, dApp pages will read directly from contracts via RPC.
-
----
-
-## 🏗 Local Development
-
+## Local Setup
 ```bash
-# Install dependencies
 npm install
-
-# Run the development server
 npm run dev
 ```
 
----
-
-## 📊 The Graph Integration
-
-Subgraph source is located in `graph/`.
-
-1. **Install dependencies**
-
+Build production:
 ```bash
-cd graph
-npm install
-```
-
-2. **Set deployed addresses and start blocks**
-
-```bash
-FACTORY_ADDRESS=0x... \
-FAUCET_ADDRESS=0x... \
-FACTORY_START_BLOCK=123456 \
-FAUCET_START_BLOCK=123460 \
-npm run set-addresses
-```
-
-3. **Build the subgraph**
-
-```bash
-npm run codegen
 npm run build
+npm run start
 ```
 
-4. **Deploy to Graph Studio**
-
-```bash
-npm run auth -- <GRAPH_DEPLOY_KEY>
-npm run deploy
-```
-
-After deployment, copy the GraphQL endpoint and set in `.env`:
+## Environment Variables
+Use `.env` (local only, not for commit) with values from your deployment:
 
 ```env
-NEXT_PUBLIC_SUBGRAPH_URL=https://api.studio.thegraph.com/query/.../flashalliance/version/latest
+NEXT_PUBLIC_RPC_URL=
+NEXT_PUBLIC_RPC_FALLBACK_URLS=
+NEXT_PUBLIC_CHAIN_ID=
+NEXT_PUBLIC_CHAIN_NAME=
+NEXT_PUBLIC_SUBGRAPH_URL=
+
+NEXT_PUBLIC_FACTORY_ADDRESS=
+NEXT_PUBLIC_TOKEN_ADDRESS=
+NEXT_PUBLIC_FAUCET_ADDRESS=
+
+NEXT_PUBLIC_TOKEN_SYMBOL=FATK
+NEXT_PUBLIC_TOKEN_DECIMALS=18
+NEXT_PUBLIC_PROTOCOL_ADMIN=
+NEXT_PUBLIC_DEPLOYMENT_DATE=
+NEXT_PUBLIC_CORE_VERSION=
+NEXT_PUBLIC_RELEASE_DATE=
+
+NEXT_PUBLIC_CORE_REPO_URL=
+NEXT_PUBLIC_FRONT_REPO_URL=
+NEXT_PUBLIC_CONTRACTS_URL=
+NEXT_PUBLIC_REDDIT_URL=
+NEXT_PUBLIC_CONTACT_URL=
 ```
 
----
+Reference template: [.env.example](.env.example)
 
-## ⚡ Data Source Behavior
+## Release Requirements
+- `next build` succeeds
+- RPC fallback configured (not single provider only)
+- Deployments page matches real onchain addresses
+- Changelog + release docs updated in same PR
+- QA flows passed: create, deposit, acquisition vote, buy, sale vote, claim/refund
+- Error paths verified: wallet reject, wrong network, RPC 429, stale env addresses
 
-* `app/dapp/alliances/page.tsx`: Uses subgraph first, falls back to direct onchain reads
-* `app/dapp/page.tsx`: Uses subgraph protocol stats for counters, fallback to factory contract reads
+Detailed gate list:
+- [app/docs/release/page.tsx](app/docs/release/page.tsx)
+- [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)
 
----
+## Open-Source Publication
+Use this repo manifest before publishing:
+- [OPEN_SOURCE_MANIFEST.md](OPEN_SOURCE_MANIFEST.md)
 
-## 📜 User Policies
+## Common Errors
+- `AllianceFactory is not deployed ...`: stale address or redeploy mismatch
+- `unsupported token`: non-standard ERC20 transfer mechanics rejected by core
+- `quorum not reached`: voting weight insufficient
+- `cooldown active`: faucet claim too early
+- HTTP 429: RPC rate-limit, retry with fallback provider
 
-* [Security Policy](SECURITY.md)
-* [Reporting Format](REPORTING.md)
-* [Usage Rules](RULES_OF_USE.md)
+## Policies
+- [SECURITY.md](SECURITY.md)
+- [REPORTING.md](REPORTING.md)
+- [RULES_OF_USE.md](RULES_OF_USE.md)
 
----
-
-## 🛠 Troubleshooting
-
-* `getAllAlliances` returns `0x`: Wrong factory address or node restarted
-* Alliance not in Funding state: already Acquired/Closed
-* Amount exceeds remaining target: deposit exceeds remaining capacity
-* Faucet claim fails: cooldown active, wrong faucet address, or faucet has no FATK liquidity
-
----
-
-## 📝 License
-
-MIT © [Tenyokj](https://github.com/Tenyokj)
-
----
-
-<p align="center">
-  Made with ❤️ for the Ethereum community
-</p>
-
+## License
+MIT

@@ -20,6 +20,7 @@ export default function WalletBar() {
     error,
     connect,
     switchToHardhat,
+    targetChainName,
     refresh
   } = useEvmWallet();
 
@@ -73,7 +74,7 @@ export default function WalletBar() {
 
         {account && isWrongNetwork ? (
           <button type="button" className="dapp-btn primary" disabled={isSwitching} onClick={switchToHardhat}>
-            {isSwitching ? "Switching..." : "Switch to Hardhat"}
+            {isSwitching ? "Switching..." : `Switch to ${targetChainName}`}
           </button>
         ) : null}
       </div>

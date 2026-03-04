@@ -2,19 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createWalletClient, custom, isAddressEqual, type Address } from "viem";
-import { dappPublicClient } from "@/lib/dapp/client";
-import { DAPP_CHAIN_ID, FAUCET_ADDRESS, faucetAbi } from "@/lib/dapp/contracts";
+import { dappChain, dappPublicClient } from "@/lib/dapp/client";
+import { FAUCET_ADDRESS, faucetAbi } from "@/lib/dapp/contracts";
 import { formatTokenAmount, loadTokenMeta } from "@/lib/dapp/token";
+import { toRpcErrorMessage, toWalletErrorMessage } from "@/lib/dapp/walletErrors";
 import { useEvmWallet } from "../hooks/useEvmWallet";
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
-
-const hardhatChain = {
-  id: DAPP_CHAIN_ID,
-  name: "Hardhat",
-  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-  rpcUrls: { default: { http: ["http://127.0.0.1:8545"] }, public: { http: ["http://127.0.0.1:8545"] } }
-} as const;
 
 function formatSeconds(value: number) {
   if (value <= 0) return "Ready now";
@@ -23,6 +17,10 @@ function formatSeconds(value: number) {
   const secs = value % 60;
   return `${hours}h ${mins}m ${secs}s`;
 }
+
+const TX_GAS_CAP = 15_000_000n;
+const GAS_PADDING_NUM = 120n;
+const GAS_PADDING_DEN = 100n;
 
 export default function FaucetCard() {
   const { account, connect, isWrongNetwork, switchToHardhat } = useEvmWallet();
@@ -79,7 +77,7 @@ export default function FaucetCard() {
         setLastClaimAt(last as bigint);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to load faucet state");
+      setError(toRpcErrorMessage(e, "Failed to load faucet state"));
     }
   }, [account, faucetDisabled]);
 
@@ -129,7 +127,7 @@ export default function FaucetCard() {
 
     const wallet = createWalletClient({
       account: active,
-      chain: hardhatChain,
+      chain: dappChain,
       transport: custom(window.ethereum)
     });
 
@@ -137,11 +135,22 @@ export default function FaucetCard() {
       setBusy(true);
       setStatus("Sending claim transaction...");
 
+      const estimatedGas = await dappPublicClient.estimateContractGas({
+        address: FAUCET_ADDRESS,
+        abi: faucetAbi,
+        functionName: "claim",
+        args: [],
+        account: active
+      });
+      const paddedGas = (estimatedGas * GAS_PADDING_NUM) / GAS_PADDING_DEN;
+      const gas = paddedGas > TX_GAS_CAP ? TX_GAS_CAP : paddedGas;
+
       const hash = await wallet.writeContract({
         address: FAUCET_ADDRESS,
         abi: faucetAbi,
         functionName: "claim",
-        args: []
+        args: [],
+        gas
       });
 
       setStatus("Waiting for confirmation...");
@@ -149,7 +158,7 @@ export default function FaucetCard() {
       setStatus("Claim successful");
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Claim failed");
+      setError(toWalletErrorMessage(e, "Claim failed"));
     } finally {
       setBusy(false);
     }
