@@ -14,7 +14,7 @@
 Frontend for FlashAlliance standalone dApp (Next.js App Router): collective NFT funding, acquisition governance, and deterministic split flows.
 
 ## Links
-- Website: `https://<your-vercel-domain>` (replace with your production domain)
+- Website: `https://flash-alliances.vercel.app` (replace with your production domain)
 - Core contracts repo: https://github.com/Tenyokj/FlashAlliance
 - Core contracts docs: https://github.com/Tenyokj/FlashAlliance/blob/main/docs/CONTRACTS.md
 
