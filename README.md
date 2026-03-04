@@ -1,40 +1,51 @@
 # FlashAlliance Frontend
 
-Frontend for FlashAlliance standalone dApp (Next.js App Router).
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-149eca?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Network](https://img.shields.io/badge/Network-Sepolia-7c3aed)](https://sepolia.etherscan.io/)
+[![License](https://img.shields.io/badge/License-MIT-22c55e)](./LICENSE)
+[![Status](https://img.shields.io/badge/Status-Demo%20%2F%20Testnet-f97316)](#)
+[![Frontend Repo](https://img.shields.io/badge/Repo-Frontend-111827?logo=github)](https://github.com/Tenyokj/FlashAlliance-front)
+[![Core Repo](https://img.shields.io/badge/Repo-Core-0f172a?logo=github)](https://github.com/Tenyokj/FlashAlliance)
 
-## Stack
+![FLA-logo](/public/flash-asset.png)
+
+Frontend for FlashAlliance standalone dApp (Next.js App Router): collective NFT funding, acquisition governance, and deterministic split flows.
+
+## Links
+- Website: `https://<your-vercel-domain>` (replace with your production domain)
+- Core contracts repo: https://github.com/Tenyokj/FlashAlliance
+- Core contracts docs: https://github.com/Tenyokj/FlashAlliance/blob/main/docs/CONTRACTS.md
+
+## Key Features
+- Marketing + onboarding pages: `/`, `/faq`, `/sepolia-guide`
+- dApp surfaces: `/dapp`, `/dapp/create`, `/dapp/alliances`, `/dapp/alliance/[address]`
+- Docs system: deployments, assumptions, runbook, changelog, release readiness
+- RPC fallback handling and readable wallet/RPC errors
+- Live contract address visibility with copy controls and explorer links
+
+## Tech Stack
 - Next.js 16
 - React 19
 - TypeScript
 - viem
-- Optional subgraph (`graph/`) with RPC fallback
+- Optional subgraph (`graph/`) with RPC fallback behavior
 
-## Core Routes
-- `/` landing
-- `/faq` marketing FAQ
-- `/sepolia-guide` onboarding for Sepolia + MetaMask + faucet
-- `/dapp` dashboard
-- `/dapp/create` alliance creation
-- `/dapp/alliances` alliance flow cards
-- `/dapp/alliance/[address]` alliance control panel
-- `/docs` technical docs
-- `/docs/deployments` source-of-truth contract addresses
-- `/docs/assumptions`, `/docs/runbook`, `/docs/changelog`, `/docs/release`
-
-## Local Setup
+## Quick Start
 ```bash
 npm install
 npm run dev
 ```
 
-Build production:
+Production build:
 ```bash
 npm run build
 npm run start
 ```
 
 ## Environment Variables
-Use `.env` (local only, not for commit) with values from your deployment:
+Use `.env` locally and keep it out of git. Use `.env.example` as template.
 
 ```env
 NEXT_PUBLIC_RPC_URL=
@@ -61,35 +72,33 @@ NEXT_PUBLIC_REDDIT_URL=
 NEXT_PUBLIC_CONTACT_URL=
 ```
 
-Reference template: [.env.example](.env.example)
+Template: [.env.example](.env.example)
 
-## Release Requirements
+## Release & Publish Checklist
 - `next build` succeeds
-- RPC fallback configured (not single provider only)
-- Deployments page matches real onchain addresses
-- Changelog + release docs updated in same PR
-- QA flows passed: create, deposit, acquisition vote, buy, sale vote, claim/refund
-- Error paths verified: wallet reject, wrong network, RPC 429, stale env addresses
+- Deployments page matches onchain addresses
+- Docs pages updated in same release
+- Critical QA flow passed: create -> deposit -> voteToAcquire -> buy -> sale/claim/refund
+- Error UX checked: wrong network, wallet reject, stale addresses, RPC 429
 
-Detailed gate list:
+Release docs:
 - [app/docs/release/page.tsx](app/docs/release/page.tsx)
 - [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)
-
-## Open-Source Publication
-Use this repo manifest before publishing:
 - [OPEN_SOURCE_MANIFEST.md](OPEN_SOURCE_MANIFEST.md)
 
 ## Common Errors
-- `AllianceFactory is not deployed ...`: stale address or redeploy mismatch
-- `unsupported token`: non-standard ERC20 transfer mechanics rejected by core
-- `quorum not reached`: voting weight insufficient
+- `AllianceFactory is not deployed ...`: stale env address or redeploy mismatch
+- `unsupported token`: non-standard ERC20 transfer mechanics are rejected
+- `quorum not reached`: insufficient vote weight
 - `cooldown active`: faucet claim too early
-- HTTP 429: RPC rate-limit, retry with fallback provider
+- HTTP 429: RPC provider rate limit reached
 
 ## Policies
 - [SECURITY.md](SECURITY.md)
 - [REPORTING.md](REPORTING.md)
 - [RULES_OF_USE.md](RULES_OF_USE.md)
+- [Terms of Use](/terms-of-use)
+- [Privacy Notice](/privacy-notice)
 
 ## License
 MIT
